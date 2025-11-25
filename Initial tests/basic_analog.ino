@@ -1,35 +1,37 @@
 #include <Joystick.h>
 
-Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID,
-JOYSTICK_TYPE_JOYSTICK,
-0,
-0,
-true,
-true,
-false,
-false, false, false, false, false, false);
+Joystick_ Joystick(
+  0x04,
+  JOYSTICK_TYPE_GAMEPAD,
+  16, 1,
+  true, true,
+  false, false,
+  false, false,
+  false, false,
+  false, false, false
+);
 
-int pitchPin = A1;
-int rollPin = A0;
+const int pitchPin = A1;
+const int rollPin = A0;
 
 void setup() {
-  Joystick.begin();
   pinMode(pitchPin, INPUT);
   pinMode(rollPin, INPUT);
+  Joystick.begin();
+  delay(1000);
 }
 
 void loop() {
   int pitchRaw = analogRead(pitchPin);
-  
   int rollRaw = analogRead(rollPin);
   
-  pitchRaw = constrain(pitchRaw, 50, 973);
-  int pitchMapped = map(pitchRaw,50,973,0,65535);
-  rollRaw = constrain(rollRaw, 50, 973);
-  int rollMapped = map(rollRaw,50,973,0,65535);
-
+  // Eliminar ruído mínimo (3-1020)
+  pitchRaw = constrain(pitchRaw, 3, 1020);
+  rollRaw = constrain(rollRaw, 3, 1020);
+  
+  // Enviar valores diretamente - sem map desnecessário
   Joystick.setYAxis(pitchRaw);
   Joystick.setXAxis(rollRaw);
 
-  delay(10);(10);
+  delay(10);
 }
