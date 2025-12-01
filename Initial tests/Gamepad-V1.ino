@@ -24,6 +24,10 @@ void setup() {
   pinMode(pitchPin, INPUT);
   pinMode(rollPin, INPUT);
   // Joystick.setZAxisRange(0, 1023);
+
+  Joystick.setXAxisRange(0, 65535);
+  Joystick.setYAxisRange(0, 65535);
+
   Joystick.begin();
   delay(1000);
 }
@@ -39,15 +43,16 @@ void loop() {
   //throttle
   // throttleValue = analogRead(throttlePin);
 
- // if(throttleValue != lastThrottleValue){
-   // Joystick.setZAxis(throttleValue);
-    //lastThrottleValue = throttleValue;
-  //}
- // Serial.println(throttleValue);
+  // if(throttleValue != lastThrottleValue){
+  //   Joystick.setZAxis(throttleValue);
+  //   lastThrottleValue = throttleValue;
+  // }
+  // Serial.println(throttleValue);
 
-  // Enviar valores diretamente - sem map desnecessário
-  Joystick.setYAxis(map(pitchRaw, 3, 1020, 0, 65535));
-  Joystick.setXAxis(map(rollRaw, 3, 1020, 0, 65535));
+  // Ajuste para 16 bits
+  Joystick.setYAxis((uint32_t)(pitchRaw * 65535UL / 1023));
+  Joystick.setXAxis((uint32_t)(rollRaw * 65535UL / 1023));
+
   Joystick.setButton(0, digitalRead(botao1) == LOW);
 
   if(digitalRead(botao1) == LOW) {
